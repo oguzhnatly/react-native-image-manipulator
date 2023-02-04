@@ -8,11 +8,15 @@ import android.util.Base64;
 import com.facebook.common.executors.CallerThreadExecutor;
 import com.facebook.common.executors.UiThreadImmediateExecutorService;
 import com.facebook.common.references.CloseableReference;
+import com.facebook.datasource.DataSubscriber;
+import com.facebook.datasource.BaseDataSubscriber;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.common.RotationOptions;
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
+import com.facebook.imagepipeline.image.CloseableAnimatedImage;
 import com.facebook.imagepipeline.image.CloseableImage;
+import com.facebook.imagepipeline.image.CloseableBitmap;
+import com.facebook.imagepipeline.animated.base.AnimatedImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.facebook.react.bridge.Arguments;
@@ -56,30 +60,59 @@ public class RNImageManipulatorModule extends ReactContextBaseJavaModule {
             .build();
     final DataSource<CloseableReference<CloseableImage>> dataSource
         = Fresco.getImagePipeline().fetchDecodedImage(imageRequest, getReactApplicationContext());
-    dataSource.subscribe(new BaseBitmapDataSubscriber() {
-                           @Override
-                           public void onNewResultImpl(Bitmap bitmap) {
-                             if (bitmap != null) {
-                               processBitmapWithActions(bitmap, actions, saveOptions, promise);
-                             } else {
-                               onFailureImpl(dataSource);
-                             }
-                           }
+    DataSubscriber dataSubscriber =
+      new BaseDataSubscriber<CloseableReference<CloseableImage>>() {
+        @Override
+        protected void onNewResultImpl(DataSource <CloseableReference<CloseableImage>> dataSource) {
+          if (!dataSource.isFinished()) {
+            return;
+          }
+          CloseableReference<CloseableImage> result = dataSource.getResult();
+          if (result != null) {
+            CloseableReference<CloseableImage> resultCopy = result.clone();
+            try {
+              CloseableImage closeableImage = resultCopy.get();
+              if (closeableImage instanceof CloseableAnimatedImage) {
+                final AnimatedImage animatedImage = ((CloseableAnimatedImage) closeableImage).getImage();
+                if (animatedImage != null) {
+                  Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+                  Bitmap bitmap = Bitmap.createBitmap(animatedImage.getWidth(), animatedImage.getHeight(), conf);
+                  animatedImage.getFrame(0).renderFrame(animatedImage.getWidth(), animatedImage.getHeight(), bitmap);
+                  processBitmapWithActions(bitmap, actions, saveOptions, promise);
+                } else {
+                  onFailureImpl(dataSource);
+                }
+              } else if (closeableImage instanceof CloseableBitmap) {
+                Bitmap bitmap = ((CloseableBitmap) closeableImage).getUnderlyingBitmap();
+                if (bitmap != null && !bitmap.isRecycled()) {
+                  processBitmapWithActions(bitmap, actions, saveOptions, promise);
+                } else {
+                  onFailureImpl(dataSource);
+                }
+              } else {
+                onFailureImpl(dataSource);
+              }
+            } finally {
+              CloseableReference.closeSafely(result);
+              CloseableReference.closeSafely(resultCopy);
+            }
+          } else {
+            onFailureImpl(dataSource);
+          }
+        }
 
-                           @Override
-                           public void onFailureImpl(DataSource dataSource) {
-                             // No cleanup required here.
-                             String basicMessage = "Could not get decoded bitmap of " + uriString;
-                             if (dataSource.getFailureCause() != null) {
-                               promise.reject(DECODE_ERROR_TAG,
-                                   basicMessage + ": " + dataSource.getFailureCause().toString(), dataSource.getFailureCause());
-                             } else {
-                               promise.reject(DECODE_ERROR_TAG, basicMessage + ".");
-                             }
-                           }
-                         },
-        CallerThreadExecutor.getInstance()
-    );
+        @Override
+        protected void onFailureImpl(DataSource <CloseableReference<CloseableImage>> dataSource) {
+          // No cleanup required here.
+          String basicMessage = "Could not get decoded bitmap of " + uriString;
+          if (dataSource.getFailureCause() != null) {
+            promise.reject(DECODE_ERROR_TAG, basicMessage + ": " + dataSource.getFailureCause().toString(), dataSource.getFailureCause());
+          } else {
+            promise.reject(DECODE_ERROR_TAG, basicMessage + ".");
+          }
+        }
+      };
+    dataSource.subscribe(dataSubscriber, CallerThreadExecutor.getInstance());
   }
 
   private void processBitmapWithActions(Bitmap bmp, ReadableArray actions, ReadableMap saveOptions, Promise promise) {
