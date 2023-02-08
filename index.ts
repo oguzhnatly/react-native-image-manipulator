@@ -1,6 +1,4 @@
-import { NativeModules } from "react-native";
-
-const { RNImageManipulator } = NativeModules;
+import RNImageManipulator from './fabric/NativeImageManipulator';
 
 export type RNImageManipulatorResult = {
     uri: string;
