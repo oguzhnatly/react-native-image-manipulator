@@ -12,7 +12,7 @@
   "dependencies": {
     "react": "18.2.0",
     "react-native": "0.71.2",
-    "react-native-image-manipulator": "file:../"
+    "@oguzhnatly/react-native-image-manipulator": "link:../"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

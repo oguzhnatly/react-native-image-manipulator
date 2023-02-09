@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button, View, Image} from 'react-native';
-import RNImageManipulator from 'react-native-image-manipulator';
+import RNImageManipulator from '@oguzhnatly/react-native-image-manipulator';
 
 export default class ImageManipulatorSample extends React.Component {
   state = {
@@ -30,12 +30,14 @@ export default class ImageManipulatorSample extends React.Component {
   }
 
   _rotate90andFlip = async () => {
-    const manipResult = await RNImageManipulator.manipulate(
-      Image.resolveAssetSource(this.state.image).uri,
-      [{rotate: 90}, {flip: {vertical: true}}],
-      {format: 'png'},
-    );
-    this.setState({image: manipResult});
+    try {
+      const manipResult = await RNImageManipulator.manipulate(
+        Image.resolveAssetSource(require('./assets/tiktok.png')).uri,
+        [{rotate: 90}, {flip: {vertical: true}}],
+        {format: 'png'},
+      );
+      this.setState({image: manipResult});
+    } catch (e) {}
   };
 
   _renderImage = () => {
