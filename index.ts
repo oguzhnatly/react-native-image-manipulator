@@ -1,4 +1,4 @@
-import RNImageManipulator from './fabric/NativeImageManipulator';
+import RNImageManipulator from './fabric/NativeImageManipulatorModule';
 
 export type RNImageManipulatorResult = {
     uri: string;
