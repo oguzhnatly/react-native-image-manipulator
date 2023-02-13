@@ -23,7 +23,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "react-native": "^0.68.0",
+    "react-native": "^0.71.2",
     "typescript": "^4.6.3"
   },
   "peerDependencies": {
