@@ -1,5 +1,4 @@
-/* eslint-disable import/no-commonjs */
-
+const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
 const path = require('path');
 const exclusionList = require('metro-config/src/defaults/exclusionList');
 const escape = require('escape-string-regexp');
@@ -11,7 +10,7 @@ const modules = [
   ...Object.keys(pack.peerDependencies),
 ];
 
-module.exports = {
+const config = {
   projectRoot: __dirname,
   watchFolders: [root],
 
@@ -40,3 +39,5 @@ module.exports = {
     }),
   },
 };
+
+module.exports = mergeConfig(getDefaultConfig(__dirname), config);
