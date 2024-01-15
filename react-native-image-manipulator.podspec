@@ -16,6 +16,7 @@ Pod::Spec.new do |s|
   s.source_files  = "ios/**/*.{h,m,mm}"
 
   if defined?(install_modules_dependencies()) != nil
+    s.platform = :ios, "13.4"
     install_modules_dependencies(s)
   else
     s.platforms = { :ios => "9.0", :tvos => "9.0" }
