@@ -6,10 +6,6 @@
      "moduleResolution": "node",
      "esModuleInterop": true,
      "allowSyntheticDefaultImports": true,
-     "typeRoots": [
-       "./ts-declarations",
-       "node_modules/@types"
-     ],
      "sourceMap": true,
      "declaration": true,
      "inlineSources": true,
@@ -21,5 +17,5 @@
      "noImplicitReturns": true,
      "outDir": "./build"
    },
-   "include": ["."]
+   "include": ["index.ts", "fabric/"]
  }

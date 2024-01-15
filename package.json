@@ -23,7 +23,18 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "react-native": "^0.68.0",
+    "react-native": "^0.71.2",
     "typescript": "^4.6.3"
+  },
+  "peerDependencies": {
+    "react-native": ">=0.63"
+  },
+  "codegenConfig": {
+    "name": "rnimagemanipulator",
+    "type": "modules",
+    "jsSrcsDir": "./fabric",
+    "android": {
+      "javaPackageName": "com.oguzhnatly.rnimagemanipulator"
+    }
   }
 }

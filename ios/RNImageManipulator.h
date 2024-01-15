@@ -1,11 +1,15 @@
-
-#if __has_include("RCTBridgeModule.h")
-#import "RCTBridgeModule.h"
+#ifdef RCT_NEW_ARCH_ENABLED
+#import <rnimagemanipulator/rnimagemanipulator.h>
 #else
-#import <React/RCTBridgeModule.h>
+#import <React/RCTBridge.h>
 #endif
 
-@interface RNImageManipulator : NSObject <RCTBridgeModule>
+@interface RNImageManipulator : NSObject
+#ifdef RCT_NEW_ARCH_ENABLED
+                                   <NativeImageManipulatorModuleSpec>
+#else
+                                   <RCTBridgeModule>
+#endif
 
 @end
   

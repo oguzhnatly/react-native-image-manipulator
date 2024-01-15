@@ -10,10 +10,18 @@ Pod::Spec.new do |s|
 
   s.authors      = package['author']
   s.homepage     = package['homepage']
-  s.platform     = :ios, "9.0"
 
   s.source       = { :git => "https://github.com/oguzhnatly/react-native-image-manipulator.git", :tag => "v#{s.version}" }
-  s.source_files    = 'ios/**/*.{h,m}'
 
-  s.dependency 'React'
+  s.source_files  = "ios/**/*.{h,m,mm}"
+
+  if defined?(install_modules_dependencies()) != nil
+    s.platform = :ios, "13.4"
+    install_modules_dependencies(s)
+  else
+    s.platforms = { :ios => "9.0", :tvos => "9.0" }
+
+    s.dependency "React-Core"
+  end
+
 end
