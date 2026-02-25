@@ -46,9 +46,15 @@ Install native pods after adding the package:
 cd ios && pod install
 ```
 
+### Mostly Automatic Installation (React Native < 0.60)
+
+```sh
+react-native link @oguzhnatly/react-native-image-manipulator
+```
+
 ### Android Setup
 
-No additional setup required for Android. The package links automatically with React Native's autolinking.
+No additional setup required for Android on React Native 0.60+. The package links automatically via autolinking.
 
 ### Manual Linking (React Native < 0.60)
 
@@ -73,7 +79,7 @@ Add the following to the `dependencies` block in `android/app/build.gradle`:
 implementation project(':react-native-image-manipulator')
 ```
 
-Open `android/app/src/main/java/[...]/MainApplication.java` and add:
+Open `android/app/src/main/java/[...]/MainActivity.java` and add:
 
 ```java
 import com.oguzhnatly.rnimagemanipulator.RNImageManipulatorPackage;
