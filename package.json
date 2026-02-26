@@ -1,6 +1,6 @@
 {
   "name": "@oguzhnatly/react-native-image-manipulator",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "ImageManipulator for react native without Expo and Unimodules. Based on Expo ImageManipulator",
   "main": "build/index.js",
   "author": "oguzhnatly",
