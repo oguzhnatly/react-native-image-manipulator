@@ -32,7 +32,7 @@ jobs:
         id: version_check
         run: |
           CURRENT_VERSION=$(node -p "require('./package.json').version")
-          PUBLISHED_VERSION=$(npm view ${{ github.event.repository.name }} version 2>/dev/null || echo "0.0.0")
+          PUBLISHED_VERSION=$(npm view $(node -p "require('./package.json').name") version 2>/dev/null || echo "0.0.0")
           echo "current=$CURRENT_VERSION" >> $GITHUB_OUTPUT
           echo "published=$PUBLISHED_VERSION" >> $GITHUB_OUTPUT
           if [ "$CURRENT_VERSION" != "$PUBLISHED_VERSION" ]; then
