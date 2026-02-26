@@ -50,7 +50,7 @@ jobs:
         if: steps.version_check.outputs.changed == 'true'
         run: |
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-          npm publish --provenance --access public
+          npm publish --access public
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
