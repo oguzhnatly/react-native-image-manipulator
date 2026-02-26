@@ -36,5 +36,9 @@
     "android": {
       "javaPackageName": "com.oguzhnatly.rnimagemanipulator"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oguzhnatly/react-native-image-manipulator"
   }
 }
