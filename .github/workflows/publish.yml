@@ -11,6 +11,8 @@ jobs:
   publish:
     name: Build and publish
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
@@ -41,11 +43,24 @@ jobs:
             echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Publish
+      - name: Publish to npm
         if: steps.version_check.outputs.changed == 'true'
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub release
+        if: steps.version_check.outputs.changed == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version_check.outputs.current }}
+          name: v${{ steps.version_check.outputs.current }}
+          body: |
+            ## @oguzhnatly/react-native-image-manipulator v${{ steps.version_check.outputs.current }}
+
+            Published to npm: https://www.npmjs.com/package/@oguzhnatly/react-native-image-manipulator
+          generate_release_notes: true
+          make_latest: true
 
       - name: Skip (version unchanged)
         if: steps.version_check.outputs.changed == 'false'
